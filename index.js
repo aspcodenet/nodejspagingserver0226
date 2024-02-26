@@ -11,6 +11,10 @@ app.use(cors({
     credentials:true 
 }))
 
+app.get('/products',async(req,res)=>{
+
+})
+
 
 app.listen(port, async () => {
     await migrationhelper.migrate()
