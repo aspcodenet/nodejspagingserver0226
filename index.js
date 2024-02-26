@@ -14,7 +14,21 @@ app.use(cors({
 }))
 
 app.get('/products',async(req,res)=>{
-    const allProducts = await Product.findAll()
+    //console.log(req.query.sortCol)
+    //console.log(req.query.sortOrder)
+    const sortCol =  req.query.sortCol || 'id';
+    const sortOrder =  req.query.sortOrder || 'asc';
+    // if(req.query.sortCol === undefined){
+    //     sortCol = 'id'
+    // }else{
+    //     sortCol = req.query.sortCol
+    // }
+
+    const allProducts = await Product.findAll({
+        order: [ 
+            [sortCol, sortOrder]
+         ]
+    })
     const result = allProducts.map(p=>{
         return {
            id:p.id,

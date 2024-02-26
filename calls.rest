@@ -1,0 +1,2 @@
+### get all
+GET http://localhost:3000/products?sortCol=unitPrice&sortOrder=asc
