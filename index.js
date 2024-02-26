@@ -2,6 +2,7 @@ const express = require('express')
 const {check} = require('express-validator')
 const cors = require('cors')
 const {Product} = require('./models')
+const {Op} = require('sequelize')
 
 const migrationhelper = require('./migrationhelper')
 const app = express()
@@ -13,11 +14,15 @@ app.use(cors({
     credentials:true 
 }))
 
-app.get('/products',async(req,res)=>{
+app.get('/products', check('q').escape() , async(req,res)=>{
     //console.log(req.query.sortCol)
     //console.log(req.query.sortOrder)
     const sortCol =  req.query.sortCol || 'id';
     const sortOrder =  req.query.sortOrder || 'asc';
+    const q =  req.query.q || '';
+    const offset =  Number(req.query.offset || 0);
+    //const page =  req.query.offset || 0;
+    const limit =  Number(req.query.limit || 20);
     // if(req.query.sortCol === undefined){
     //     sortCol = 'id'
     // }else{
@@ -25,9 +30,17 @@ app.get('/products',async(req,res)=>{
     // }
 
     const allProducts = await Product.findAll({
+        where:{
+            name:{
+                [Op.like]: '%' + q + '%'
+            }
+        },
         order: [ 
             [sortCol, sortOrder]
-         ]
+         ],
+        offset: offset,
+        limit:limit
+
     })
     const result = allProducts.map(p=>{
         return {

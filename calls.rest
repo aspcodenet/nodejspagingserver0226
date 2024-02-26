@@ -1,2 +1,2 @@
 ### get all
-GET http://localhost:3000/products?sortCol=unitPrice&sortOrder=asc
+GET http://localhost:3000/products?sortCol=unitPrice&sortOrder=asc&limit=20&offset=40
