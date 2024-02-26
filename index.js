@@ -29,7 +29,7 @@ app.get('/products', check('q').escape() , async(req,res)=>{
     //     sortCol = req.query.sortCol
     // }
 
-    const allProducts = await Product.findAll({
+    const allProducts = await Product.findAndCountAll({
         where:{
             name:{
                 [Op.like]: '%' + q + '%'
@@ -42,7 +42,8 @@ app.get('/products', check('q').escape() , async(req,res)=>{
         limit:limit
 
     })
-    const result = allProducts.map(p=>{
+    const total = allProducts.count
+    const result = allProducts.rows.map(p=>{
         return {
            id:p.id,
            name:p.name,
@@ -50,7 +51,10 @@ app.get('/products', check('q').escape() , async(req,res)=>{
            stockLevel:p.stockLevel
        }
     })
-    return res.json(result)
+    return res.json({
+        total,
+        result
+    })
 })
 
 
