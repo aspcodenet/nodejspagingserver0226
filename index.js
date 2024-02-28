@@ -33,40 +33,14 @@ app.get('/products', check('q').escape() , async(req,res)=>{
 
 
     // SELECT * from Product order by id asc 
-    const allProducts = await Product.findAll({
-        order: [ 
-            [sortCol, sortOrder]
-         ],
-    })
-    const result2 = allProducts.map(p=>{
-        return {
-           id:p.id,
-           name:p.name,
-           unitPrice:p.unitPrice,
-           stockLevel:p.stockLevel
-       }
-    })
-    res.json(result2)
-
-    
-
-
-
-    // const allProducts = await Product.findAndCountAll({
-    //     where:{
-    //         name:{
-    //             [Op.like]: '%' + q + '%'
-    //         }
-    //     },
+    // const allProducts = await Product.findAll({
     //     order: [ 
     //         [sortCol, sortOrder]
     //      ],
-    //     offset: offset,
-    //     limit:limit
-
+    //      offset:offset,
+    //      limit:limit
     // })
-    // const total = allProducts.count
-    // const result = allProducts.rows.map(p=>{
+    // const result2 = allProducts.map(p=>{
     //     return {
     //        id:p.id,
     //        name:p.name,
@@ -74,10 +48,37 @@ app.get('/products', check('q').escape() , async(req,res)=>{
     //        stockLevel:p.stockLevel
     //    }
     // })
-    // return res.json({
-    //     total,
-    //     result
-    // })
+    // res.json(result2)
+
+    
+
+
+
+    const allProducts = await Product.findAndCountAll({
+        where: {
+                name: { [Op.like] :  '%'  + q + '%' }
+        },
+        order: [ 
+            [sortCol, sortOrder]
+         ],
+
+        offset: offset,
+        limit:limit
+
+    })
+    const total = allProducts.count
+    const result = allProducts.rows.map(p=>{
+        return {
+           id:p.id,
+           name:p.name,
+           unitPrice:p.unitPrice,
+           stockLevel:p.stockLevel
+       }
+    })
+    return res.json({
+        total,
+        result
+    })
 })
 
 
