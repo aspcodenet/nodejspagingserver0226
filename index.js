@@ -4,7 +4,7 @@
 const express = require('express')
 const {check} = require('express-validator')
 const cors = require('cors')
-const {Product} = require('./models')
+const {Product,Category} = require('./models')
 const {Op} = require('sequelize')
 
 const migrationhelper = require('./migrationhelper')
@@ -16,6 +16,24 @@ app.use(cors({
     origin:"http://localhost:5500",
     credentials:true 
 }))
+
+
+app.get('/api/product/:id',  async(req,res)=>{
+    const oneProduct = await Product.findOne({
+        where:{id:req.params.id},
+        include:'category'
+    });
+    return res.json(oneProduct);
+});
+
+
+app.get('/api/category',  async(req,res)=>{
+    const allProducts = await Category.findAll({
+        include:'products'
+    });
+    return res.json(allProducts);
+});
+
 
 
 app.get('/api/products',  async(req,res)=>{
